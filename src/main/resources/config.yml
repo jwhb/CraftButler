@@ -1,1 +1,3 @@
+behaviors:
+  location: 'behaviors'
 debug: false

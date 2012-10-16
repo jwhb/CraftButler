@@ -16,7 +16,7 @@ public class CraftButler extends JavaPlugin implements Listener {
     File configFile;
     FileConfiguration config;
 	ChatListener cl;
-	BehaviourLoader bl;
+	BehaviorLoader bl;
 	private Logger logger;
     
     public void onDisable() {
@@ -34,7 +34,7 @@ public class CraftButler extends JavaPlugin implements Listener {
         CraftButlerUtils.loadConfigs(configFile, config);
         
         this.cl = new ChatListener((Plugin) this);
-        this.bl = new BehaviourLoader();
+        this.bl = new BehaviorLoader();
         
         CraftButlerUtils.logDebug("Debug mode enabled");
         if(this.config.getBoolean("debug")){
