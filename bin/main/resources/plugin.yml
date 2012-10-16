@@ -1,9 +1,0 @@
-author: JWhy
-database: false
-description: May come later
-generator: http://dinnerbone.com/minecraft/tools/pluginator/
-main: org.jwhy.craftbutler.CraftButler
-name: CraftButler
-startup: postworld
-url: http://jwhy.de/plugins/chatbutler
-version: '1.0'
