@@ -6,4 +6,4 @@ main: org.jwhy.craftbutler.CraftButler
 name: CraftButler
 startup: postworld
 url: http://jwhy.de/plugins/chatbutler
-version: '1.0'
+version: '0.1'
