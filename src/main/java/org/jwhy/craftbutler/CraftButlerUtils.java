@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.logging.Level;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -29,7 +30,11 @@ public class CraftButlerUtils {
     public static void runFirstSetup(Plugin plugin, File configFile){
         if(!configFile.exists()){
             configFile.getParentFile().mkdirs();
-            CraftButlerUtils.copy(plugin.getResource("config.yml"), configFile);
+            InputStream config_res = plugin.getResource("config.yml");
+            if(config_res == null){
+            	runEmergency(plugin, "Config doesn't exist, sample file not available.");
+            }
+            CraftButlerUtils.copy(config_res, configFile);
         }
     }
     
@@ -48,4 +53,14 @@ public class CraftButlerUtils {
             e.printStackTrace();
         }
     }
+    
+    public static void runEmergency(Plugin plugin, String reason){
+    	plugin.getLogger().log(Level.SEVERE, "S" + reason);
+    	plugin.getPluginLoader().disablePlugin(plugin);
+    }
+
+
+	public static void logDebug(String string) {
+		
+	}
 }
