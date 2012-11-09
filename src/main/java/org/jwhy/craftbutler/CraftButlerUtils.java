@@ -34,6 +34,7 @@ public class CraftButlerUtils {
             if(config_res == null){
             	runEmergency(plugin, "Config doesn't exist, sample file not available.");
             }
+            plugin.getLogger().log(Level.INFO, "Created new config.yml");
             CraftButlerUtils.copy(config_res, configFile);
         }
     }
@@ -63,4 +64,29 @@ public class CraftButlerUtils {
 	public static void logDebug(String string) {
 		
 	}
+	
+	public static String getExtension(String filename) {
+		int ext = filename.lastIndexOf(".");
+		return(filename.substring(ext + 1));
+	}
+	
+	public static String getExtension(File file){
+		return(getExtension(file.getName()));
+	}
+	
+	public static File[] getDirectoryFiles(File dir, String extension){
+		File[] contents = dir.listFiles();
+		for(int i = 0; i<contents.length;i++){
+		  //cf => current file
+		  File cf = contents[i];
+		  logDebug(getExtension(cf));
+		  if(cf instanceof File && getExtension(cf) == extension){
+			  //Filter everything but files
+			  contents[i] = cf;
+		  }
+		}
+		return(contents);		
+	}
+	
+	
 }
