@@ -26,15 +26,23 @@ public class CraftButler extends JavaPlugin implements Listener {
 
     public void onEnable() {
     	this.logger = this.getLogger(); 
+    	String slash = java.io.File.separator;
     	
-    	//Configuration
+    	//Init configuration
     	this.config = new YamlConfiguration();
         this.configFile = new File(getDataFolder(), "config.yml");
         CraftButlerUtils.runFirstSetup(this, configFile);
         CraftButlerUtils.loadConfigs(configFile, config);
         
+        //Register listener
         this.cl = new ChatListener((Plugin) this);
-        this.bl = new BehaviorLoader();
+        
+        //Load behaviors
+        File behavior_directory = new File(
+        	getDataFolder() + slash + config.getString("behaviors.location", "behaviors")
+        );
+        this.bl = new BehaviorLoader(behavior_directory);
+        this.bl.loadBehaviors();
         
         CraftButlerUtils.logDebug("Debug mode enabled");
         if(this.config.getBoolean("debug")){
