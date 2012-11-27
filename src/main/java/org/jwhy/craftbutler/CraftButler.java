@@ -1,7 +1,6 @@
 package org.jwhy.craftbutler;
 
 import java.io.File;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.configuration.file.FileConfiguration;
@@ -13,11 +12,13 @@ import org.jwhy.craftbutler.ChatListener;
 
 public class CraftButler extends JavaPlugin implements Listener {
 	
-    File configFile;
-    FileConfiguration config;
-	ChatListener cl;
-	BehaviorLoader bl;
-	private Logger logger;
+	private File configFile;
+    private FileConfiguration config;
+	private ChatListener cl;
+	private BehaviorLoader bl;
+	private Logger log;
+	public static boolean debug = false;
+
     
     public void onDisable() {
     	
@@ -25,7 +26,7 @@ public class CraftButler extends JavaPlugin implements Listener {
     }
 
     public void onEnable() {
-    	this.logger = this.getLogger(); 
+    	this.log = this.getLogger(); 
     	String slash = java.io.File.separator;
     	
     	//Init configuration
@@ -41,12 +42,12 @@ public class CraftButler extends JavaPlugin implements Listener {
         File behavior_directory = new File(
         	getDataFolder() + slash + config.getString("behaviors.location", "behaviors")
         );
-        this.bl = new BehaviorLoader(behavior_directory);
+        this.bl = new BehaviorLoader(behavior_directory, this);
         this.bl.loadBehaviors();
         
-        CraftButlerUtils.logDebug("Debug mode enabled");
+        CraftButlerUtils.logDebug("Debug mode enabled", this);
         if(this.config.getBoolean("debug")){
-        	logger.log(Level.INFO, "Debug mode enabled");
+        	log.info("Debug mode enabled");
         }
     }
     
