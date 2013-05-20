@@ -14,7 +14,6 @@ public class CraftButler extends JavaPlugin implements Listener {
 
 	private Logger logger;
 	private FileConfiguration config;
-	@SuppressWarnings("unused")
 	private ChatListener cl;
 	private BehaviorManager bm;
 	public static boolean debug = false;
@@ -28,8 +27,8 @@ public class CraftButler extends JavaPlugin implements Listener {
 		//Set references
 		this.logger = this.getLogger();
 		this.config = new YamlConfiguration();
-		this.bm = new BehaviorManager(this);
 		this.cl = new ChatListener(this);
+		this.bm = new BehaviorManager(this, this.cl);
 		
 		// Init configuration
 		File configFile = new File(getDataFolder(), "config.yml");
@@ -41,9 +40,13 @@ public class CraftButler extends JavaPlugin implements Listener {
 			CraftButler.debug = true;
 		CraftButlerUtils.logDebug("Debug mode enabled", this);
 		
+		//Load behaviors
 		this.bm.loadFromDir(new File(this.getDataFolder().toString()
 				+ File.separator
 				+ this.config.getString("system.directory", "behaviors")));
+		
+		//Register ChatListener
+        this.getServer().getPluginManager().registerEvents(this.cl, this);
 	}
 	
 	public void log(String msg){

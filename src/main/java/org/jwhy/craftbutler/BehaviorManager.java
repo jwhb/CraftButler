@@ -1,6 +1,7 @@
 package org.jwhy.craftbutler;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.net.*;
 import java.util.*;
 import java.util.logging.*;
@@ -10,11 +11,15 @@ import org.bukkit.plugin.Plugin;
 public class BehaviorManager {
 
 	private Plugin butler;
+	private ChatListener cl;
 	private Logger logger;
-	private  List<Behavior> behaviors = new ArrayList<Behavior>();
+	private List<Behavior> behaviors = new ArrayList<Behavior>();
+	private HashMap<String, Method> prefixedCommands = new HashMap<String,Method>();
+	private HashMap<String, Method> regex = new HashMap<String,Method>();
 
-	public BehaviorManager(CraftButler butler) {
+	public BehaviorManager(CraftButler butler, ChatListener cl) {
 		this.butler = butler;
+		this.cl = cl;
 		this.logger = butler.getLogger();
 	}
 
@@ -33,8 +38,7 @@ public class BehaviorManager {
 			loader = new URLClassLoader(new URL[] { dir.toURI().toURL() },
 					Behavior.class.getClassLoader());
 		} catch (MalformedURLException ex) {
-			this.logger.log(Level.SEVERE,
-					"Error while configuring behavior class loader", ex);
+			this.logger.severe("Error while configuring behavior class loader. " + ex.getMessage());
 			return this.behaviors;
 		}
 		for (File file : dir.listFiles()) {
@@ -57,12 +61,12 @@ public class BehaviorManager {
 					continue;
 				}
 				Behavior behavior = (Behavior) object;
-				this.behaviors.add(behavior);
+				this.registerBehavior(behavior);
 				
 				if(behavior.getName() != null) name = behavior.getName();
 				this.logger.info("Loaded behavior: " + name);
 			} catch (Exception ex) {
-				this.logger.log(Level.WARNING, "Error loading '" + name + "'");
+				this.logger.warning("Error loading '" + name + "'");
 				ex.printStackTrace();
 			}
 		}
@@ -71,5 +75,11 @@ public class BehaviorManager {
     
     public void registerBehavior(Behavior behavior){
     	this.behaviors.add(behavior);
+    	
+    	this.prefixedCommands.putAll(behavior.mapPrefixedCommands());
+    	this.cl.setPrefixedCommands(this.prefixedCommands);
+    	
+    	this.regex.putAll(behavior.mapRegex());
+    	this.cl.setRegex(this.regex);
     }
 }
