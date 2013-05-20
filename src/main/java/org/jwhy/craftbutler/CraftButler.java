@@ -50,4 +50,8 @@ public class CraftButler extends JavaPlugin implements Listener {
 		this.logger.log(Level.INFO, msg);
 	}
 
+	public BehaviorManager getBehaviorManager() {
+		return(this.bm);
+	}
+
 }
