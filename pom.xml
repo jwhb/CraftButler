@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jwhy.craftbutler</groupId>
     <artifactId>CraftButler</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
     <name>CraftButler</name>
     <url>http://dl.jwhy.de/?dir=bukkit/CraftButler</url>
     <repositories>

@@ -1,6 +1,6 @@
 name: CraftButler
-description: May come later
+description: Bukkit chatbot with dynamic behaviours
 author: JWhy
 main: org.jwhy.craftbutler.CraftButler
 url: http://dl.jwhy.de/?dir=bukkit/CraftButler
-version: '0.1'
+version: '0.2'
