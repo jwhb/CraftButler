@@ -1,54 +1,53 @@
 package org.jwhy.craftbutler;
 
 import java.io.File;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.Plugin;
 import org.jwhy.craftbutler.ChatListener;
 
 public class CraftButler extends JavaPlugin implements Listener {
-	
-	private File configFile;
-    private FileConfiguration config;
+
+	private Logger logger;
+	private FileConfiguration config;
+	@SuppressWarnings("unused")
 	private ChatListener cl;
-	private BehaviorLoader bl;
-	private Logger log;
+	private BehaviorManager bm;
 	public static boolean debug = false;
 
-    
-    public void onDisable() {
-    	
-        // TODO: Place any custom disable code here.
-    }
+	public void onDisable() {
 
-    public void onEnable() {
-    	this.log = this.getLogger(); 
-    	String slash = java.io.File.separator;
-    	
-    	//Init configuration
-    	this.config = new YamlConfiguration();
-        this.configFile = new File(getDataFolder(), "config.yml");
-        CraftButlerUtils.runFirstSetup(this, configFile);
-        CraftButlerUtils.loadConfigs(configFile, config);
-        
-        //Register listener
-        this.cl = new ChatListener((Plugin) this);
-        
-        //Load behaviors
-        File behavior_directory = new File(
-        	getDataFolder() + slash + config.getString("behaviors.location", "behaviors")
-        );
-        this.bl = new BehaviorLoader(behavior_directory, this);
-        this.bl.loadBehaviors();
-        
-        CraftButlerUtils.logDebug("Debug mode enabled", this);
-        if(this.config.getBoolean("debug")){
-        	log.info("Debug mode enabled");
-        }
-    }
-    
-} 
+	}
+
+	public void onEnable() {
+
+		//Set references
+		this.logger = this.getLogger();
+		this.config = new YamlConfiguration();
+		this.bm = new BehaviorManager(this);
+		this.cl = new ChatListener(this);
+		
+		// Init configuration
+		File configFile = new File(getDataFolder(), "config.yml");
+		CraftButlerUtils.runFirstSetup(this, configFile);
+		CraftButlerUtils.loadConfigs(configFile, config);
+
+		// Enable debug mode (if defined in config)
+		if (this.config.getBoolean("debug"))
+			CraftButler.debug = true;
+		CraftButlerUtils.logDebug("Debug mode enabled", this);
+		
+		this.bm.loadFromDir(new File(this.getDataFolder().toString()
+				+ File.separator
+				+ this.config.getString("behaviors.directory", "behaviors")));
+	}
+	
+	public void log(String msg){
+		this.logger.log(Level.INFO, msg);
+	}
+
+}
