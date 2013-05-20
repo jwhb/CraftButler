@@ -37,13 +37,13 @@ public class CraftButler extends JavaPlugin implements Listener {
 		CraftButlerUtils.loadConfigs(configFile, config);
 
 		// Enable debug mode (if defined in config)
-		if (this.config.getBoolean("debug"))
+		if (this.config.getBoolean("system.debug", false))
 			CraftButler.debug = true;
 		CraftButlerUtils.logDebug("Debug mode enabled", this);
 		
 		this.bm.loadFromDir(new File(this.getDataFolder().toString()
 				+ File.separator
-				+ this.config.getString("behaviors.directory", "behaviors")));
+				+ this.config.getString("system.directory", "behaviors")));
 	}
 	
 	public void log(String msg){

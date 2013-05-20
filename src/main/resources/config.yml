@@ -1,3 +1,6 @@
-behaviors:
+system:
   directory: 'behaviors'
-debug: true
+  debug: true
+behaviors:
+  sample-behavior:
+    enabled: true
