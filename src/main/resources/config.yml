@@ -1,6 +1,7 @@
 system:
   directory: 'behaviors'
   debug: true
+  command-prefix: '.'
 behaviors:
   sample-behavior:
     enabled: true
