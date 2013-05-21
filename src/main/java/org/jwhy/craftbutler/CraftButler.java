@@ -29,6 +29,7 @@ public class CraftButler extends JavaPlugin implements Listener {
 		this.config = new YamlConfiguration();
 		this.cl = new ChatListener(this);
 		this.bm = new BehaviorManager(this, this.cl);
+		this.cl.setBehaviorManager(this.bm);
 		
 		// Init configuration
 		File configFile = new File(getDataFolder(), "config.yml");

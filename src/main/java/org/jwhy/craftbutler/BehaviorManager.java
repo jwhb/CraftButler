@@ -13,7 +13,7 @@ public class BehaviorManager {
 	private Plugin butler;
 	private ChatListener cl;
 	private Logger logger;
-	private List<Behavior> behaviors = new ArrayList<Behavior>();
+	private HashMap<String, Behavior> behaviors = new HashMap<String, Behavior>();
 	private HashMap<String, Method> prefixedCommands = new HashMap<String,Method>();
 	private HashMap<String, Method> regex = new HashMap<String,Method>();
 
@@ -23,7 +23,15 @@ public class BehaviorManager {
 		this.logger = butler.getLogger();
 	}
 
-	public List<Behavior> loadFromDir(File dir) {
+	public HashMap<String, Behavior> getBehaviors() {
+		return(this.behaviors);
+	}
+	
+	public Behavior getBehavior(String name){
+		return(this.behaviors.get(name));
+	}
+
+	public HashMap<String, Behavior> loadFromDir(File dir) {
 		
 		dir.mkdirs();
 
@@ -56,8 +64,7 @@ public class BehaviorManager {
 				Object object = clazz.getDeclaredConstructor(CraftButler.class)
 						.newInstance(this.butler);
 				if (!(object instanceof Behavior)) {
-					this.logger.info("Not a valid behavior: "
-							+ clazz.getSimpleName());
+					this.logger.info("Not a valid behavior: " + clazz.getSimpleName());
 					continue;
 				}
 				Behavior behavior = (Behavior) object;
@@ -74,9 +81,9 @@ public class BehaviorManager {
 	}
     
     public void registerBehavior(Behavior behavior){
-    	this.behaviors.add(behavior);
+    	this.behaviors.put(behavior.getClass().getSimpleName(), behavior);
     	
-    	this.prefixedCommands.putAll(behavior.mapPrefixedCommands());
+		this.prefixedCommands.putAll(behavior.mapPrefixedCommands());
     	this.cl.setPrefixedCommands(this.prefixedCommands);
     	
     	this.regex.putAll(behavior.mapRegex());
