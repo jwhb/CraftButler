@@ -70,7 +70,7 @@ public class BehaviorManager {
 				Behavior behavior = (Behavior) object;
 				this.registerBehavior(behavior);
 				
-				if(behavior.getName() != null) name = behavior.getName();
+				name = behavior.getClass().getSimpleName();
 				this.logger.info("Loaded behavior: " + name);
 			} catch (Exception ex) {
 				this.logger.warning("Error loading '" + name + "'");
