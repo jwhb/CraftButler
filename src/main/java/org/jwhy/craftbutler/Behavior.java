@@ -7,16 +7,11 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public abstract class Behavior {
 
-	public String name;
 	protected CraftButler butler;
 	protected HashMap<String, Method> pc = new HashMap<String, Method>();
 	
 	public Behavior(CraftButler butler){
 		this.butler = butler;
-	}
-
-	public final String getName(){
-		return(this.name);
 	}
 	
 	protected void linkMethod(String command, String method){
