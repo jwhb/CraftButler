@@ -12,14 +12,21 @@ import org.jwhy.craftbutler.ChatListener;
 
 public class CraftButler extends JavaPlugin implements Listener {
 
+	private File configFile;
 	private Logger logger;
 	private FileConfiguration config;
-	private ChatListener cl;
 	private BehaviorManager bm;
+	private ChatListener cl;
+	private CommandListener col;
 	public static boolean debug = false;
 
 	public void onDisable() {
-
+		try {
+			this.config.save(this.configFile);
+		} catch (Exception e) {
+			this.logger.warning("Couldn't save config file '" + this.configFile + "': "
+				+ e.getMessage());
+		}
 	}
 
 	public void onEnable() {
@@ -30,11 +37,12 @@ public class CraftButler extends JavaPlugin implements Listener {
 		this.cl = new ChatListener(this);
 		this.bm = new BehaviorManager(this, this.cl);
 		this.cl.setBehaviorManager(this.bm);
+		this.col = new CommandListener(this);
 		
 		// Init configuration
-		File configFile = new File(getDataFolder(), "config.yml");
-		CraftButlerUtils.runFirstSetup(this, configFile);
-		CraftButlerUtils.loadConfigs(configFile, config);
+		this.configFile = new File(getDataFolder(), "config.yml");
+		CraftButlerUtils.runFirstSetup(this, this.configFile);
+		CraftButlerUtils.loadConfigs(this.configFile, config);
 
 		// Enable debug mode (if defined in config)
 		if (this.config.getBoolean("system.debug", false))
@@ -47,11 +55,22 @@ public class CraftButler extends JavaPlugin implements Listener {
 				+ this.config.getString("system.directory", "behaviors")));
 		
 		//Register ChatListener
-        this.getServer().getPluginManager().registerEvents(this.cl, this);
+        this.getServer().getPluginManager().registerEvents(this, this);
+        
+        //Register commands
+        this.getCommand("craftbutler").setExecutor(this.col);
+	}
+	
+	public File getConfigFile(){
+		return(this.configFile);
 	}
 	
 	public void log(String msg){
 		this.logger.log(Level.INFO, msg);
+	}
+	
+	public void logDebug(String msg){
+		CraftButlerUtils.logDebug(msg, this);
 	}
 
 	public BehaviorManager getBehaviorManager() {

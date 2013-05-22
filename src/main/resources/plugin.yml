@@ -4,3 +4,7 @@ author: JWhy
 main: org.jwhy.craftbutler.CraftButler
 url: http://dl.jwhy.de/?dir=bukkit/CraftButler
 version: '0.2'
+commands:
+    craftbutler:
+        description: CraftButler base command
+        usage: /craftbutler (reload)
