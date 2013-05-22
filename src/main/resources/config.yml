@@ -1,7 +1,16 @@
 system:
+  # Directory where the behavior .class files are saved
   directory: 'behaviors'
-  debug: true
-  command-prefix: '.'
+  # Whether to enable debug mode (shows additional information)
+  debug: false
+  prefixed-commands:
+    # Prefix for prefixed commands. If the prefix is '!',
+    # then '!command' is a command
+    prefix: '.'
+    # How many seconds to wait before reacting to a command
+    # Use steps of 0.05 seconds
+    delay: 0.05
+    
 behaviors:
   sample-behavior:
     enabled: true

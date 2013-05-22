@@ -2,14 +2,18 @@ package org.jwhy.craftbutler;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.Plugin;
+import org.jwhy.craftbutler.task.DelayedBroadcastTask;
 
 public class ChatListener implements Listener {
 
 	private Plugin plugin;
+	private FileConfiguration config;
 	private BehaviorManager bm;
 	private String cmdPrefix;
 	private HashMap<String, Method> prefixedCmds;
@@ -18,7 +22,8 @@ public class ChatListener implements Listener {
 	
 	public ChatListener(Plugin plugin){
 		this.plugin = plugin;
-		this.cmdPrefix = this.plugin.getConfig().getString("system.command-prefix", ".");
+		this.config = plugin.getConfig();
+		this.cmdPrefix = this.config.getString("system.prefixed-commands.prefix", ".");
 	}
 	
 	public void setBehaviorManager(BehaviorManager bm){
@@ -54,8 +59,20 @@ public class ChatListener implements Listener {
 		} else {
 			Behavior behavior = this.bm.getBehavior(method.getDeclaringClass().getSimpleName());
 			try {
-				Object result = method.invoke(behavior, event);
-				if(result != null) this.plugin.getServer().broadcastMessage(result.toString());
+				//Check if behavior is disabled
+				String behavior_name = behavior.getClass().getSimpleName();
+				if(this.config.getBoolean("behaviors." + behavior_name.toLowerCase() + ".enabled", true)){
+					Object result = method.invoke(behavior, event);
+			        new DelayedBroadcastTask(
+		        		this.plugin,
+		        		result.toString()
+			        ).runTaskLater(
+		        		this.plugin, (int) 20 * (long) this.config.
+		        		getDouble("system.prefixed-commands.delay", 0.1d)
+			        );
+				} else {
+					CraftButlerUtils.logDebug("Disabled behavior queried: " + behavior_name, this.plugin);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
