@@ -10,7 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jwhy.craftbutler.ChatListener;
 
-public class CraftButler extends JavaPlugin implements Listener {
+public class CraftButler extends JavaPlugin {
 
 	private File configFile;
 	private Logger logger;
@@ -55,7 +55,7 @@ public class CraftButler extends JavaPlugin implements Listener {
 				+ this.config.getString("system.directory", "behaviors")));
 		
 		//Register ChatListener
-        this.getServer().getPluginManager().registerEvents(this, this);
+        this.getServer().getPluginManager().registerEvents(this.cl, this);
         
         //Register commands
         this.getCommand("craftbutler").setExecutor(this.col);
